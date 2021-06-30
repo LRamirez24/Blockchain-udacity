@@ -49,6 +49,9 @@ class Blockchain {
         });
     }
 
+
+
+    
     /**
      * _addBlock(block) will store a block in the chain
      * @param {*} block 
@@ -64,7 +67,32 @@ class Blockchain {
     _addBlock(block) {
         let self = this;
         return new Promise(async (resolve, reject) => {
-           
+
+            try {
+                const newHeight = this.height + 1;
+
+                block.height = newHeight;
+                block.time = new Date().getTime().toString().slice(0,-3);
+
+                if (newHeight > 0) {
+                    const previousBlock = await this.getBlockByHeight(this.height);
+                    block.previousBlockHash = previousBlock.hash;
+                }
+
+                block.hash = SHA256( JSON.stringify(block) ).toString();
+
+                this.chain.push(block);
+
+                this.height = newHeight;
+
+                resolve(block);
+
+            } catch (err) {
+
+                reject(err);
+
+            }
+
         });
     }
 
@@ -78,7 +106,8 @@ class Blockchain {
      */
     requestMessageOwnershipVerification(address) {
         return new Promise((resolve) => {
-            
+           
+            resolve(`${address}:${new Date().getTime().toString().slice(0,-3)}:starRegistry`); 
         });
     }
 
