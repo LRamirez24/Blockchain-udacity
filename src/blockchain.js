@@ -151,7 +151,12 @@ class Blockchain {
     getBlockByHash(hash) {
         let self = this;
         return new Promise((resolve, reject) => {
-           
+            let filteredBlock = self.chain.filter(value => value.hash === hash)[0];
+            if(!filteredBlock) {
+                reject(new Error('Block not found with hash: ' + hash));
+            }else {
+                resolve(filteredBlock);
+            }
         });
     }
 
@@ -182,7 +187,15 @@ class Blockchain {
         let self = this;
         let stars = [];
         return new Promise((resolve, reject) => {
-            
+            self.chain.forEach(block => {
+                block.getBData().then(data => {
+                    if(data.owner === address){
+                        stars.push(data);
+                    }
+                });
+            });
+            resolve(stars);
+         
         });
     }
 
