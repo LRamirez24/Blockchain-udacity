@@ -160,6 +160,7 @@ class Blockchain {
         });
     }
 
+
     /**
      * This method will return a Promise that will resolve with the Block object 
      * with the height equal to the parameter `height`
@@ -176,6 +177,7 @@ class Blockchain {
             }
         });
     }
+
 
     /**
      * This method will return a Promise that will resolve with an array of Stars objects existing in the chain 
@@ -199,20 +201,44 @@ class Blockchain {
         });
     }
 
+
     /**
      * This method will return a Promise that will resolve with the list of errors when validating the chain.
      * Steps to validate:
      * 1. You should validate each block using `validateBlock`
      * 2. Each Block should check the with the previousBlockHash
      */
-    validateChain() {
+     validateChain() {
         let self = this;
         let errorLog = [];
         return new Promise(async (resolve, reject) => {
+            for (let i = 0; i < this.chain.length; i++) {
+                const currentBlock = this.chain[i];
+                if ( !(await currentBlock.validate()) ) {
+                    errorLog.push({
+                        error: 'Failed Validation',
+                        block: currentBlock
+                    });
+                }
+
+                if (i === 0) continue;
+
+                const previousBlock = this.chain[i - 1];
+                if (currentBlock.previousBlockHash !== previousBlock.hash) {
+                    errorLog.push({
+                        error: 'Previous block hash does not match',
+                        block: currentBlock
+                    });
+                }
+            }
+
+            resolve(errorLog);
             
         });
     }
 
 }
+
+
 
 module.exports.Blockchain = Blockchain;   
