@@ -135,10 +135,23 @@ class Blockchain {
             const allowedDelay = 5 * 60;
             if (currentTime - messageTime > allowedDelay) reject(new Error('Time elapsed is greater than 5 minutes'));
             const valid = bitcoinMessage.verify(message, address, signature);
-            const newBlock = new BlockClass.Block({star: star, owner: address });
-            const resolveBlock = await this._addBlock(block);
-                resolve(resolveBlock);
+            if (!valid) reject(new Error('Verification failed'));
 
+
+
+            try {
+
+                const block = new BlockClass.Block({star: star, owner: address });
+
+                const resolvedBlock = await this._addBlock(block);
+
+                resolve(resolvedBlock);
+
+            } catch (err) {
+
+                reject(err);
+
+            }
         });
     }
 
