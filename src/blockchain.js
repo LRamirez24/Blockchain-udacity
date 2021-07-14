@@ -67,8 +67,22 @@ class Blockchain {
     _addBlock(block) {
         let self = this;
         return new Promise(async (resolve, reject) => {
+            
+           // First check if the current chain is valid
+            if(await self.validateChain() != ""){
+                reject(new Error ("_addBlock: chain validation error"));
+           }
+
 
             try {
+
+        //  // validate the blockchain before any block addition
+        // const newErrors = await self.validateChain();
+        // if (newErrors.length > 0) {
+        //   console.error(errors);
+        //   throw new Error("Unable to add block to the chain!");
+        // }
+        
                 const newHeight = self.height + 1;
 
                 block.height = newHeight;
@@ -84,6 +98,8 @@ class Blockchain {
                 self.chain.push(block);
 
                 self.height = newHeight;
+
+               // await self.validateChain();
 
                 resolve(block);
 

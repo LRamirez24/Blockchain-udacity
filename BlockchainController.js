@@ -54,6 +54,8 @@ class BlockchainController {
         });
     }
 
+
+    
     // Endpoint that allow Submit a Star, yu need first to `requestOwnership` to have the message (POST endpoint)
     submitStar() {
         this.app.post("/submitstar", async (req, res) => {
@@ -77,6 +79,7 @@ class BlockchainController {
             }
         });
     }
+
 
     // This endpoint allows you to retrieve the block by hash (GET endpoint)
     getBlockByHash() {
